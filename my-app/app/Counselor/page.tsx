@@ -3,7 +3,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
 import Header from './Componenets/Header';
-
 import {
   ChevronDown, ChevronUp, Save, RefreshCw, Calendar,
   Briefcase, User, TrendingUp, Globe, MessageSquare,
@@ -151,8 +150,6 @@ const LEARNING_PATH = [
   { id: 4, title: "دورة UI/UX", duration: "4 أسابيع", completed: false }
 ];
 
-// ==================== REUSABLE COMPONENTS ====================
-
 // Animations as a component
 const CustomStyles = () => (
   <style jsx global>{`
@@ -183,7 +180,7 @@ const CustomStyles = () => (
 
 // Reusable badge component
 const Badge = ({ text, color = "emerald" }: { text: string; color?: string }) => (
-  <span className={`bg-${color}-100 text-${color}-800 text-xs px-2 py-1 rounded-full font-medium`}>
+  <span className={`px-2 py-1 text-xs font-medium rounded-full bg-${color}-100 text-${color}-700`}>
     {text}
   </span>
 );
@@ -358,7 +355,7 @@ const ProfileSummaryCard = () => (
           أي
         </div>
         <div>
-          <h3 className="font-bold text-lg">أيوب محمد</h3>
+          <h3 className="font-bold text-black text-lg">أيوب محمد</h3>
           <p className="text-gray-600 mb-1">طالب جامعي • تقنية المعلومات</p>
           <div className="flex gap-2 mt-2">
             <Badge text="مبدع" color="indigo" />
@@ -371,19 +368,19 @@ const ProfileSummaryCard = () => (
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-emerald-50 p-3 rounded-lg">
           <div className="text-emerald-700 font-bold mb-1">الاهتمامات</div>
-          <div className="text-sm">التصميم، البرمجة، التحليل، الإبداع، تطوير الألعاب</div>
+          <div className="text-sm text-black">التصميم، البرمجة، التحليل، الإبداع، تطوير الألعاب</div>
         </div>
         <div className="bg-indigo-50 p-3 rounded-lg">
           <div className="text-indigo-700 font-bold mb-1">المهارات</div>
-          <div className="text-sm">React، CSS، JavaScript، التفكير المنطقي، حل المشكلات</div>
+          <div className="text-sm text-black">React، CSS، JavaScript، التفكير المنطقي، حل المشكلات</div>
         </div>
         <div className="bg-blue-500 p-3 rounded-lg">
           <div className="text-indigo-700 font-bold mb-1">نقاط القوة</div>
-          <div className="text-sm">الإبداع، التواصل، العمل الجماعي، التعلم السريع</div>
+          <div className="text-sm text-black">الإبداع، التواصل، العمل الجماعي، التعلم السريع</div>
         </div>
         <div className="bg-purple-50 p-3 rounded-lg">
           <div className="text-purple-700 font-bold mb-1">أهداف التطوير</div>
-          <div className="text-sm">إتقان React، تعلم تحليل البيانات، تطوير مهارات القيادة</div>
+          <div className="text-sm text-black">إتقان React، تعلم تحليل البيانات، تطوير مهارات القيادة</div>
         </div>
       </div>
     </div>
@@ -428,49 +425,105 @@ const LearningPathCard = () => (
 );
 
 // Component for job postings
-const JobPostingsCard = () => (
-  <Panel>
-    <div className="flex justify-between items-center mb-4">
-      <SectionHeader icon={<Briefcase size={20} />} title="وظائف مناسبة لك" />
-      <Badge text="جديد" color="emerald" />
-    </div>
-    
-    <div className="space-y-3">
-      {JOBS_DATA.map(job => (
-        <div key={job.id} className="border border-gray-100 rounded-lg p-3 hover:bg-gray-50 transition-colors duration-200">
-          <div className="flex justify-between">
-            <div className="flex">
-              <div className="w-10 h-10 bg-emerald-100 rounded-md flex items-center justify-center text-emerald-700 font-bold ml-3">
-                {job.logo}
-              </div>
-              <div>
-                <h3 className="font-medium">{job.title}</h3>
-                <p className="text-sm text-gray-600">{job.company} • {job.location}</p>
-              </div>
-            </div>
-            <Badge text={job.posted} color="blue" />
-          </div>
-          <div className="mt-2 flex justify-between items-center">
-            <div className="flex gap-2">
-              <Badge text={job.type} color="gray" />
-              <span className="text-sm text-gray-700">{job.salary}</span>
-            </div>
-            <button className="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
-              عرض التفاصيل
-            </button>
-          </div>
+const JobPostingsCard = () => {
+  const [hoveredJob, setHoveredJob] = useState<number | null>(null);
+
+  return (
+    <Panel>
+      <div className="flex justify-between items-center mb-4">
+        <SectionHeader icon={<Briefcase size={20} />} title="وظائف مناسبة لك" />
+        <div className="flex gap-2">
+          <Badge text="جديد" color="emerald" />
+          <Badge text={`${JOBS_DATA.length} وظائف`} color="blue" />
         </div>
-      ))}
-    </div>
-    
-    <div className="mt-4 text-center">
-      <button className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center mx-auto">
-        عرض المزيد من الوظائف
-        <ArrowUpRight size={16} className="mr-1" />
-      </button>
-    </div>
-  </Panel>
-);
+      </div>
+      
+      <div className="space-y-4">
+        {JOBS_DATA.map(job => (
+          <div 
+            key={job.id} 
+            className={`border border-gray-100 rounded-lg p-4 transition-all duration-300
+              ${hoveredJob === job.id 
+                ? 'bg-gradient-to-r from-emerald-50 to-blue-50 shadow-md transform -translate-y-1' 
+                : 'hover:bg-gray-50'}`}
+            onMouseEnter={() => setHoveredJob(job.id)}
+            onMouseLeave={() => setHoveredJob(null)}
+          >
+            <div className="flex justify-between">
+              <div className="flex">
+                <div className={`w-12 h-12 bg-gradient-to-br from-emerald-100 to-emerald-200 
+                  rounded-lg flex items-center justify-center text-emerald-700 font-bold ml-3
+                  shadow-sm transition-transform duration-300
+                  ${hoveredJob === job.id ? 'scale-110' : ''}`}>
+                  {job.logo}
+                </div>
+                <div>
+                  <h3 className="font-medium text-lg text-black">{job.title}</h3>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Briefcase size={14} />
+                    <span>{job.company}</span>
+                    <span>•</span>
+                    <Globe size={14} />
+                    <span>{job.location}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col items-end">
+                <Badge text={job.posted} color="blue" />
+                <span className="text-sm text-emerald-600 mt-1">يغلق خلال 5 أيام</span>
+              </div>
+            </div>
+            
+            <div className="mt-3 flex justify-between items-center">
+              <div className="flex gap-2 items-center">
+                <Badge text={job.type} color="gray" />
+                <span className="text-sm font-medium text-gray-700">{job.salary}</span>
+              </div>
+              <div className="flex gap-2">
+                <button className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
+                  <BookOpen size={18} />
+                </button>
+                <button className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
+                  <Star size={18} />
+                </button>
+                <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-all duration-200 flex items-center gap-1">
+                  <Send size={16} />
+                  تقديم طلب
+                </button>
+              </div>
+            </div>
+
+            {hoveredJob === job.id && (
+              <div className="mt-3 pt-3 border-t border-gray-200 animate-fadeIn">
+                <div className="flex gap-2 text-sm text-gray-600">
+                  <span className="flex items-center">
+                    <Clock size={14} className="ml-1" />
+                    الخبرة المطلوبة: سنتان
+                  </span>
+                  <span className="flex items-center">
+                    <User size={14} className="ml-1" />
+                    50 متقدم
+                  </span>
+                  <span className="flex items-center">
+                    <TrendingUp size={14} className="ml-1" />
+                    نسبة التوافق: 85%
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      
+      <div className="mt-6 flex justify-center">
+        <button className="group bg-white border border-indigo-200 hover:border-indigo-300 text-indigo-600 px-6 py-2 rounded-md transition-all duration-200 flex items-center gap-2">
+          عرض المزيد من الوظائف
+          <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1" />
+        </button>
+      </div>
+    </Panel>
+  );
+};
 
 // Component for chat section
 const ChatSection = ({ chatInput, chatResponse, setChatInput, handleChatSubmit }: {
@@ -604,7 +657,12 @@ const SkillTrendsChart = () => {
       <SectionHeader icon={<TrendingUp size={20} />} title="تطور المهارات المطلوبة" />
       
       <ResponsiveContainer width="100%" height="85%">
-        <BarChart data={SKILL_TREND_DATA as SkillTrendItem[]} layout="vertical">
+        <BarChart 
+          data={SKILL_TREND_DATA as SkillTrendItem[]} 
+          layout="vertical"
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          barSize={20}
+        >
           <defs>
             <linearGradient id="currentGradient" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%" stopColor={THEME.colors.primary} stopOpacity={0.8} />
@@ -730,73 +788,123 @@ const CareerMatchChart = ({ data }: { data: CareerMatchItem[] }) => {
     </Panel>
   );
 };
-
+// Renamed to avoid conflict with the existing SectionHeader component
+const SectionHeaderWithAction = ({ icon, title, action }: { icon: React.ReactNode; title: string; action: React.ReactNode }) => (
+  <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-100">
+    <div className="flex items-center gap-2 text-emerald-700">
+      {icon}
+      <h2 className="font-bold text-lg">{title}</h2>
+    </div>
+    {action}
+  </div>
+);
 // Component for market analysis
 const MarketAnalysisCard = () => {
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const currentSkills = [
-    { name: "JavaScript", growth: 15, level: 85, color: "emerald", trend: "↗️" },
-    { name: "تحليل البيانات", growth: 22, level: 78, color: "blue", trend: "⬆️" },
-    { name: "تصميم UI/UX", growth: 18, level: 75, color: "purple", trend: "↗️" },
-    { name: "React", growth: 25, level: 90, color: "amber", trend: "⬆️" }
+    { name: "JavaScript", growth: 15, level: 85, color: "emerald", trend: "↗️", demand: "عالي جداً" },
+    { name: "تحليل البيانات", growth: 22, level: 78, color: "blue", trend: "⬆️", demand: "متزايد" },
+    { name: "تصميم UI/UX", growth: 18, level: 75, color: "purple", trend: "↗️", demand: "عالي" },
+    { name: "React", growth: 25, level: 90, color: "amber", trend: "⬆️", demand: "عالي جداً" }
   ];
 
   const futureSkills = [
-    { name: "الذكاء الاصطناعي وتعلم الآلة", readiness: 65, timing: "6-12 شهر" },
-    { name: "Web3 وتقنية Blockchain", readiness: 45, timing: "12-18 شهر" },
-    { name: "الواقع المعزز والافتراضي (AR/VR)", readiness: 55, timing: "6-12 شهر" }
+    { 
+      name: "الذكاء الاصطناعي وتعلم الآلة", 
+      readiness: 65, 
+      timing: "6-12 شهر",
+      impact: "تحويلي",
+      companies: ["Google", "Microsoft", "Amazon"]
+    },
+    { 
+      name: "Web3 وتقنية Blockchain", 
+      readiness: 45, 
+      timing: "12-18 شهر",
+      impact: "مرتفع",
+      companies: ["Coinbase", "Binance", "Meta"]
+    },
+    { 
+      name: "الواقع المعزز والافتراضي (AR/VR)", 
+      readiness: 55, 
+      timing: "6-12 شهر",
+      impact: "متوسط",
+      companies: ["Meta", "Apple", "Unity"]
+    }
   ];
 
+  const refreshData = () => {
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 1000);
+  };
+
   return (
-    <Panel>
-      <SectionHeader icon={<TrendingUp size={20} />} title="تحليل سوق العمل" />
+    <Panel className="relative overflow-hidden">
+      <div className="flex justify-between items-center mb-6">
+        <SectionHeader icon={<TrendingUp size={20} />} title="تحليل سوق العمل" />
+        <RefreshCw 
+          size={16} 
+          className={`text-gray-400 hover:text-emerald-600 cursor-pointer transition-transform duration-500 ${isAnimating ? 'animate-spin' : ''}`}
+          onClick={refreshData}
+        />
+      </div>
       
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-3">
-          <h3 className="font-bold text-emerald-600">🧭 المهارات الأكثر طلباً</h3>
-          <RefreshCw size={16} className="text-gray-400 hover:text-emerald-600 cursor-pointer" />
+      <div className="mb-6 space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="font-bold text-emerald-600 flex items-center gap-2">
+            🧭 المهارات الأكثر طلباً
+            <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">
+              تحديث مباشر
+            </span>
+          </h3>
         </div>
 
         <div className="grid grid-cols-1 gap-3">
           {currentSkills.map((skill) => (
             <div
               key={skill.name}
-              className={`p-3 rounded-md transition-all duration-300 cursor-pointer
+              className={`p-4 rounded-lg transition-all duration-300 cursor-pointer border
                 ${selectedSkill === skill.name 
-                  ? `bg-${skill.color}-100 shadow-md transform -translate-y-1` 
-                  : `bg-${skill.color}-50 hover:bg-${skill.color}-100`}`}
+                  ? `bg-${skill.color}-100 shadow-lg transform -translate-y-1 border-${skill.color}-200` 
+                  : `bg-${skill.color}-50 hover:bg-${skill.color}-100 border-transparent`}`}
               onClick={() => setSelectedSkill(skill.name)}
             >
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex justify-between items-center mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium">{skill.name}</span>
-                  <span className="text-sm">{skill.trend}</span>
+                  <span className="font-medium text-lg">{skill.name}</span>
+                  <span className="text-sm animate-pulse">{skill.trend}</span>
                 </div>
-                <Badge text={`+${skill.growth}% نمو`} color={skill.color} />
+                <div className="flex items-center gap-2">
+                  <Badge text={`+${skill.growth}% نمو`} color={skill.color} />
+                  <Badge text={skill.demand} color="gray" />
+                </div>
               </div>
               
-              <div className="relative">
-                <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="relative mb-4">
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
                   <div
-                    className={`h-2 rounded-full bg-${skill.color}-500 transition-all duration-1000`}
+                    className={`h-2.5 rounded-full transition-all duration-1000
+                      bg-gradient-to-r from-${skill.color}-400 to-${skill.color}-600`}
                     style={{ width: `${skill.level}%` }}
                   />
                 </div>
-                <span className="absolute -top-6 right-0 text-xs text-gray-600">
+                <span className="absolute -top-6 right-0 text-sm text-gray-600">
                   مستوى الطلب: {skill.level}%
                 </span>
               </div>
 
               {selectedSkill === skill.name && (
-                <div className="mt-3 text-sm text-gray-600 animate-fadeIn">
-                  <div className="flex justify-between mb-1">
-                    <span>متوسط الراتب:</span>
-                    <span className="font-medium">15,000 - 25,000 ريال</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>عدد الوظائف المتاحة:</span>
-                    <span className="font-medium">120+ وظيفة</span>
+                <div className="mt-3 space-y-2 text-sm animate-fadeIn">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white/50 p-2 rounded">
+                      <p className="text-gray-600">متوسط الراتب</p>
+                      <p className="font-medium">15,000 - 25,000 ريال</p>
+                    </div>
+                    <div className="bg-white/50 p-2 rounded">
+                      <p className="text-gray-600">الوظائف المتاحة</p>
+                      <p className="font-medium">120+ وظيفة</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -806,26 +914,48 @@ const MarketAnalysisCard = () => {
       </div>
       
       <div>
-        <div className="flex justify-between items-center mb-3">
-          <h3 className="font-bold text-emerald-600">⏳ المهارات الناشئة للمستقبل</h3>
-          <Badge text="توقعات 2024" color="indigo" />
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-bold text-emerald-600 flex items-center gap-2">
+            ⏳ المهارات الناشئة للمستقبل
+            <Badge text="توقعات 2024" color="indigo" />
+          </h3>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {futureSkills.map((skill) => (
-            <div key={skill.name} className="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-md">
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">{skill.name}</span>
-                <span className="text-sm text-gray-600">خلال {skill.timing}</span>
+            <div 
+              key={skill.name} 
+              className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-lg hover:shadow-md transition-all duration-300"
+            >
+              <div className="flex justify-between items-center mb-3">
+                <div>
+                  <h4 className="font-medium mb-1">{skill.name}</h4>
+                  <div className="flex gap-2 text-sm">
+                    <span className="text-gray-600">خلال {skill.timing}</span>
+                    <span>•</span>
+                    <span className="text-purple-600">تأثير {skill.impact}</span>
+                  </div>
+                </div>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-1.5">
-                <div
-                  className="h-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
-                  style={{ width: `${skill.readiness}%` }}
-                />
+              
+              <div className="mb-3">
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000"
+                    style={{ width: `${skill.readiness}%` }}
+                  />
+                </div>
+                <div className="mt-2 text-sm text-gray-600">
+                  جاهزية السوق: {skill.readiness}%
+                </div>
               </div>
-              <div className="mt-1 text-xs text-gray-500">
-                جاهزية السوق: {skill.readiness}%
+
+              <div className="flex gap-2 mt-2">
+                {skill.companies.map((company) => (
+                  <span key={company} className="text-xs bg-white/50 px-2 py-1 rounded">
+                    {company}
+                  </span>
+                ))}
               </div>
             </div>
           ))}
@@ -869,7 +999,7 @@ const AssessmentCard = () => {
         <div className="transition-all duration-300">
           {activeSection === 'strengths' && (
             <div className="animate-fadeIn">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 text-black">
                 {[
                   { icon: '🎨', text: 'التفكير الإبداعي', score: 95 },
                   { icon: '🧮', text: 'التفكير المنطقي', score: 90 },
@@ -896,7 +1026,7 @@ const AssessmentCard = () => {
         
         <div className="mt-6">
           <div className="flex justify-between mb-4">
-            <h3 className="font-medium">مستوى التقدم الإجمالي</h3>
+            <h3 className="font-medium text-black">مستوى التقدم الإجمالي</h3>
             <span className="text-emerald-600 font-medium">85%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -936,7 +1066,7 @@ const EventsCard = () => {
         <Badge text="4 فعاليات جديدة" color="emerald" />
       </div>
       
-      <div className="space-y-4">
+      <div className="space-y-4 text-black">
         {[
           {
             id: 1,
@@ -1053,7 +1183,7 @@ const NotificationsCard = () => {
                   {notification.icon}
                 </span>
                 <div>
-                  <p className="font-medium">{notification.title}</p>
+                  <p className="font-medium text-black">{notification.title}</p>
                   <p className="text-sm text-gray-500">{notification.time}</p>
                 </div>
               </div>
@@ -1073,52 +1203,85 @@ const NotificationsCard = () => {
 };
 
 // Component for Weekly time investment recommendation
-const TimeInvestmentCard = () => (
-  <Panel>
-    <SectionHeader icon={<Clock size={20} />} title="توصيات استثمار الوقت" />
-    
-    <div className="bg-emerald-50 p-4 rounded-lg mb-4">
-      <h3 className="font-medium text-emerald-700 mb-2">خطة أسبوعية مقترحة</h3>
-      <div className="space-y-2">
-        <div className="flex justify-between items-center">
-          <span>تعلم React</span>
-          <Badge text="8 ساعات" color="emerald" />
+const TimeInvestmentCard = () => {
+  const [hoveredActivity, setHoveredActivity] = useState<string | null>(null);
+  const activities = [
+    { name: 'تعلم React', hours: 8, color: 'black', percentage: 40, icon: '💻' },
+    { name: 'تطوير مشروع عملي', hours: 5, color: 'blue', percentage: 25, icon: '🚀' },
+    { name: 'دراسة تصميم UI/UX', hours: 4, color: 'purple', percentage: 20, icon: '🎨' },
+    { name: 'التواصل المهني', hours: 3, color: 'amber', percentage: 15, icon: '🤝' }
+  ];
+
+  const totalHours = activities.reduce((sum, activity) => sum + activity.hours, 0);
+
+  return (
+    <Panel className="transition-all duration-300 hover:shadow-lg">
+      <SectionHeader icon={<Clock size={20} />} title="توصيات استثمار الوقت" />
+      
+      <div className="bg-gradient-to-br from-emerald-50 to-blue-50 p-4 rounded-lg mb-4">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-medium text-emerald-700">خطة أسبوعية مقترحة</h3>
+          <Badge text={`${totalHours} ساعة إجمالية`} color="emerald" />
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-1.5">
-          <div className="h-1.5 rounded-full bg-emerald-500" style={{ width: '40%' }}></div>
-        </div>
-        
-        <div className="flex justify-between items-center">
-          <span>تطوير مشروع عملي</span>
-          <Badge text="5 ساعات" color="blue" />
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-1.5">
-          <div className="h-1.5 rounded-full bg-blue-500" style={{ width: '25%' }}></div>
-        </div>
-        
-        <div className="flex justify-between items-center">
-          <span>دراسة تصميم UI/UX</span>
-          <Badge text="4 ساعات" color="purple" />
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-1.5">
-          <div className="h-1.5 rounded-full bg-purple-500" style={{ width: '20%' }}></div>
-        </div>
-        
-        <div className="flex justify-between items-center">
-          <span>التواصل المهني</span>
-          <Badge text="3 ساعات" color="amber" />
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-1.5">
-          <div className="h-1.5 rounded-full bg-amber-500" style={{ width: '15%' }}></div>
+
+        <div className="space-y-4">
+          {activities.map((activity) => (
+            <div
+              key={activity.name}
+              className="transform transition-all text-black duration-300"
+              onMouseEnter={() => setHoveredActivity(activity.name)}
+              onMouseLeave={() => setHoveredActivity(null)}
+              style={{
+                transform: hoveredActivity === activity.name ? 'translateX(-8px)' : 'none'
+              }}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">{activity.icon}</span>
+                  <span className="font-medium">{activity.name}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge text={`${activity.hours} ساعات`} color={activity.color} />
+                  {hoveredActivity === activity.name && (
+                    <span className={`text-${activity.color}-600 text-sm animate-fadeIn`}>
+                      {activity.percentage}%
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="relative">
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full bg-${activity.color}-500 transition-all duration-1000`}
+                    style={{ 
+                      width: `${activity.percentage}%`,
+                      boxShadow: hoveredActivity === activity.name ? `0 0 10px ${activity.color}` : 'none'
+                    }}
+                  />
+                </div>
+                {hoveredActivity === activity.name && (
+                  <div className={`absolute -right-2 -top-8 bg-${activity.color}-100 text-${activity.color}-700 px-2 py-1 rounded text-xs animate-fadeIn`}>
+                    {activity.hours * 60} دقيقة
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
-    
-    <button className="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium py-2 rounded-md transition-colors duration-200">
-      إنشاء جدول زمني مخصص
-    </button>
-  </Panel>
-);
+      
+      <div className="flex gap-2">
+        <button className="flex-1 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium py-2 px-4 rounded-md transition-all duration-200 transform hover:-translate-y-1 hover:shadow-md">
+          إنشاء جدول مخصص
+        </button>
+        <button className="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 p-2 rounded-md transition-all duration-200 hover:shadow-md">
+          <RefreshCw size={20} />
+        </button>
+      </div>
+    </Panel>
+  );
+};
 
 // ==================== MAIN COMPONENT ====================
 
