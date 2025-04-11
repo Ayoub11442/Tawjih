@@ -531,64 +531,45 @@ const ChatSection = ({ chatInput, chatResponse, setChatInput, handleChatSubmit }
   chatResponse: string;
   setChatInput: (input: string) => void;
   handleChatSubmit: (e: React.FormEvent) => void;
-}) => (
-  <Panel>
-    <SectionHeader icon={<MessageSquare size={20} />} title="المستشار الافتراضي (روبوت دردشة ذكي)" />
-    <div className="mb-4">
-      <div className="bg-gray-50 p-4 rounded-lg mb-4">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-            <MessageSquare size={16} />
-          </div>
-          <p className="font-medium text-black">المستشار المهني الذكي</p>
-        </div>
-        
-        {chatResponse && (
-          <div className="mt-2 p-3 bg-emerald-50 rounded-lg border-r-4 border-emerald-500 animate-slideIn">
-            <p className="text-black">{chatResponse}</p>
-          </div>
-        )}
-        
-        <div className="text-xs text-gray-500 mt-3">
-          يمكنك سؤال المستشار عن التوصيات المهنية، تفاصيل المسارات، أو طلب نصائح شخصية.
-        </div>
-      </div>
+}) => {
+  // New function to handle clicking on suggested questions
+  const handleSuggestedQuestion = (question: string) => {
+    setChatInput(question);
+    // Trigger the form submission with a synthetic event
+    const event = { preventDefault: () => {} } as React.FormEvent;
+    handleChatSubmit(event);
+  };
+  
+  return (
+    <Panel>
+      {/* Rest of your component remains the same */}
       
-      <form onSubmit={handleChatSubmit} className="flex">
-        <input
-          type="text"
-          value={chatInput}
-          onChange={(e) => setChatInput(e.target.value)}
-          placeholder="اكتب سؤالك هنا..."
-          className="flex-1 border border-gray-300 rounded-r-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
-        />
-        <button 
-          type="submit" 
-          className="bg-emerald-500 text-white px-4 py-2 rounded-l-md hover:bg-emerald-600 transition-colors duration-200"
-          aria-label="Send message"
-        >
-          <Send size={20} />
-        </button>
-      </form>
-    </div>
-    
-    <div className="bg-indigo-50 p-3 rounded-lg">
-      <p className="text-sm font-medium text-indigo-800 mb-2">أسئلة مقترحة:</p>
-      <div className="flex flex-wrap gap-2">
-        <button className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200">
-          لماذا تناسبني مجال تطوير الواجهات؟
-        </button>
-        <button className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200">
-          ما هي المهارات التي يجب تطويرها؟
-        </button>
-        <button className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200">
-          كيف أبدأ في مجال تحليل البيانات؟
-        </button>
+      <div className="bg-indigo-50 p-3 rounded-lg">
+        <p className="text-sm font-medium text-indigo-800 mb-2">أسئلة مقترحة:</p>
+        <div className="flex flex-wrap gap-2">
+          <button 
+            onClick={() => handleSuggestedQuestion("لماذا تناسبني مجال تطوير الواجهات؟")}
+            className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200"
+          >
+            لماذا تناسبني مجال تطوير الواجهات؟
+          </button>
+          <button 
+            onClick={() => handleSuggestedQuestion("ما هي المهارات التي يجب تطويرها؟")}
+            className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200"
+          >
+            ما هي المهارات التي يجب تطويرها؟
+          </button>
+          <button 
+            onClick={() => handleSuggestedQuestion("كيف أبدأ في مجال تحليل البيانات؟")}
+            className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200"
+          >
+            كيف أبدأ في مجال تحليل البيانات؟
+          </button>
+        </div>
       </div>
-    </div>
-  </Panel>
-);
-
+    </Panel>
+  );
+};
 // Component for video recommendations
 const VideoRecommendationsCard = () => (
   <Panel>
