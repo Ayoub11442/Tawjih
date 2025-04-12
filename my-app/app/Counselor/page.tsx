@@ -7,8 +7,11 @@ import {
   ChevronDown, ChevronUp, Save, RefreshCw, Calendar,
   Briefcase, User, TrendingUp, Globe, MessageSquare,
   Send, BookOpen, Award, Compass, Star, Zap, ArrowUpRight,
-  UserPlus, FileText, Bell, Play, Download, Clock
+  UserPlus, FileText, Bell, Play, Download, Clock,
+  Users, Mail
 } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebook, faTwitter, faLinkedin, faGithub} from '@fortawesome/free-brands-svg-icons';
 
 // Types
 interface Course {
@@ -63,7 +66,7 @@ const CAREER_DATA: CareerRecommendation[] = [
     title: "تطوير الواجهات الأمامية",
     match: 91,
     description: "مجال يجمع بين البرمجة والإبداع في تصميم الواجهات وبناء تجارب مستخدم تفاعلية جذابة",
-    salary: { min: 60000, max: 95000, currency: "ريال" },
+    salary: { min: 6000, max: 9500, currency: "dh" },
     growth: 22,
     courses: [
       { name: "دورة React الشاملة", url: "#", provider: "Udemy", rating: 4.8, duration: "30 ساعة" },
@@ -77,7 +80,7 @@ const CAREER_DATA: CareerRecommendation[] = [
     title: "مصمم تجربة مستخدم",
     match: 76,
     description: "تصميم تجارب مستخدم سلسة وجذابة مع التركيز على سهولة الاستخدام وإجراء بحوث المستخدم",
-    salary: { min: 55000, max: 90000, currency: "ريال" },
+    salary: { min: 5500, max: 9000, currency: "dh" },
     growth: 18,
     courses: [
       { name: "أساسيات تصميم UX", url: "#", provider: "Interaction Design Foundation", rating: 4.7, duration: "25 ساعة" },
@@ -91,7 +94,7 @@ const CAREER_DATA: CareerRecommendation[] = [
     title: "محلل بيانات",
     match: 62,
     description: "تحليل البيانات واستخراج رؤى قيمة لاتخاذ القرارات الاستراتيجية وتحسين الأعمال",
-    salary: { min: 65000, max: 110000, currency: "ريال" },
+    salary: { min: 6500, max: 11000, currency: "dh" },
     growth: 25,
     courses: [
       { name: "علم البيانات الشامل", url: "#", provider: "DataCamp", rating: 4.8, duration: "50 ساعة" },
@@ -107,9 +110,9 @@ const JOBS_DATA: JobPosting[] = [
     id: 1,
     title: "مطور واجهات أمامية",
     company: "شركة تقنية المستقبل",
-    location: "الرياض (عن بعد)",
+    location: "الرباط  (عن بعد)",
     type: "دوام كامل",
-    salary: "80,000 - 95,000 ريال",
+    salary: "8,000 - 9,500 dh",
     posted: "منذ يومين",
     logo: "TF"
   },
@@ -117,9 +120,9 @@ const JOBS_DATA: JobPosting[] = [
     id: 2,
     title: "مصمم UX/UI",
     company: "إبداع الرقمية",
-    location: "جدة",
+    location: "أكادير",
     type: "دوام كامل",
-    salary: "75,000 - 85,000 ريال",
+    salary: "7,500 - 8,500 dh",
     posted: "منذ 3 أيام",
     logo: "إر"
   },
@@ -127,9 +130,9 @@ const JOBS_DATA: JobPosting[] = [
     id: 3,
     title: "مطور React",
     company: "تطبيقات السحاب",
-    location: "الدمام (مرن)",
+    location: "مراكش  (مرن)",
     type: "دوام كامل",
-    salary: "85,000 - 100,000 ريال",
+    salary: "8,500 - 10,000 dh",
     posted: "اليوم",
     logo: "تس"
   }
@@ -150,74 +153,110 @@ const LEARNING_PATH = [
   { id: 4, title: "دورة UI/UX", duration: "4 أسابيع", completed: false }
 ];
 
-// Animations as a component
+// Animations as a component with enhanced effects
 const CustomStyles = () => (
   <style jsx global>{`
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
     @keyframes slideIn {
-      from { transform: translateY(-10px); opacity: 0; }
+      from { transform: translateY(-20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
     @keyframes pulseGlow {
       0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      50% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
       100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
     .animate-fadeIn {
-      animation: fadeIn 0.5s ease-out forwards;
+      animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
     .animate-slideIn {
-      animation: slideIn 0.3s ease-out forwards;
+      animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
     .animate-pulse-glow {
-      animation: pulseGlow 2s infinite;
+      animation: pulseGlow 2.5s infinite;
+    }
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
     }
   `}</style>
 );
 
-// Reusable badge component
+// Enhanced badge component with gradient effects
 const Badge = ({ text, color = "emerald" }: { text: string; color?: string }) => (
-  <span className={`px-2 py-1 text-xs font-medium rounded-full bg-${color}-100 text-${color}-700`}>
+  <span 
+    className={`
+      px-3 py-1.5 text-xs font-medium rounded-full
+      transition-all duration-300 hover:scale-105
+      bg-gradient-to-r from-${color}-100 to-${color}-200 
+      text-${color}-700 hover:shadow-md
+    `}
+  >
     {text}
   </span>
 );
 
-// Star rating component
+// Improved star rating with animations
 const StarRating = ({ rating }: { rating: number }) => {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 >= 0.5;
   
   return (
-    <div className="flex items-center">
+    <div className="flex items-center group">
       {[...Array(5)].map((_, i) => (
-        <span key={i} className={i < fullStars ? "text-yellow-400" : (i === fullStars && hasHalfStar ? "text-yellow-400" : "text-gray-300")}>
+        <span 
+          key={i} 
+          className={`
+            transition-all duration-300
+            transform group-hover:scale-110
+            ${i < fullStars 
+              ? "text-yellow-400" 
+              : (i === fullStars && hasHalfStar 
+                ? "text-yellow-400" 
+                : "text-gray-300")}
+          `}
+        >
           ★
         </span>
       ))}
-      <span className="mr-1 text-sm">{rating.toFixed(1)}</span>
+      <span className="mr-2 text-sm font-medium">{rating.toFixed(1)}</span>
     </div>
   );
 };
 
-// Section header component
+// Enhanced section header with gradient text
 const SectionHeader = ({ icon, title }: { icon: React.ReactNode; title: string }) => (
-  <h2 className="text-xl font-bold mb-4 flex items-center text-emerald-700">
-    {icon}
-    <span className="mr-2">{title}</span>
+  <h2 className="text-xl font-bold mb-4 flex items-center">
+    <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+      {icon}
+      <span className="mr-2">{title}</span>
+    </span>
   </h2>
 );
 
-// Panel component
+// Improved panel with hover effects
 const Panel = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
-  <div className={`bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 ${className}`}>
+  <div 
+    className={`
+      bg-white rounded-lg shadow-md p-6 
+      transition-all duration-300
+      hover:shadow-xl hover:transform hover:-translate-y-1
+      border border-gray-100 hover:border-emerald-200
+      ${className}
+    `}
+  >
     {children}
   </div>
 );
 
-// Action button component
+// Enhanced action button with better visual feedback
 const ActionButton = ({ icon, text, onClick = () => {}, primary = false }: { 
   icon: React.ReactNode; 
   text: string; 
@@ -225,203 +264,161 @@ const ActionButton = ({ icon, text, onClick = () => {}, primary = false }: {
   primary?: boolean;
 }) => (
   <button 
-    className={`rounded-lg p-4 text-center flex items-center justify-center transition-all duration-300 hover:shadow-md transform hover:-translate-y-1 ${
-      primary 
-        ? "bg-gradient-to-l from-emerald-600 to-teal-500 text-black" 
-        : "bg-gray-100 hover:bg-emerald-100 text-black"
-    }`}
+    className={`
+      rounded-lg p-4 text-center flex items-center justify-center
+      transition-all duration-300
+      transform hover:-translate-y-1
+      ${primary 
+        ? "bg-gradient-to-r from-emerald-600 to-teal-500 text-white hover:shadow-emerald-lg" 
+        : "bg-white border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 text-gray-700"}
+      hover:shadow-lg active:scale-95
+    `}
     onClick={onClick}
   >
-    {icon}
-    <span className="mr-2">{text}</span>
+    <span className="mr-2 transition-transform duration-300 group-hover:rotate-12">
+      {icon}
+    </span>
+    {text}
   </button>
 );
 
-// ==================== FEATURE COMPONENTS ====================
-
-// Component for career card with toggle expansion
-const CareerCard = ({ career, isExpanded, onToggle }: {
-  career: CareerRecommendation;
-  isExpanded: boolean;
+// Career Card Component
+const CareerCard = ({ 
+  career, 
+  isExpanded, 
+  onToggle 
+}: { 
+  career: CareerRecommendation; 
+  isExpanded: boolean; 
   onToggle: () => void;
-}) => {
-  const getMatchColor = (match: number) => {
-    if (match > 80) return THEME.colors.primary;
-    if (match > 70) return THEME.colors.secondary;
-    return THEME.colors.accent;
-  };
-
-  return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      <div 
-        className="p-4 cursor-pointer hover:bg-emerald-50 transition-colors duration-200"
-        onClick={onToggle}
-        role="button"
-        aria-expanded={isExpanded}
-      >
-        <div className="flex justify-between items-center">
-          <h3 className="font-bold text-lg text-black">💼 المجال المقترح: {career.title}</h3>
-          <div className="flex items-center">
-            <Badge text={`نمو: +${career.growth}%`} color="blue" />
-            <span className="mx-2">
-              {isExpanded ? 
-                <ChevronUp size={20} className="text-emerald-600" /> : 
-                <ChevronDown size={20} className="text-emerald-600" />
-              }
-            </span>
-          </div>
+}) => (
+  <div className={`bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300
+                  border border-gray-100 overflow-hidden
+                  ${isExpanded ? 'transform -translate-y-1' : ''}`}>
+    <div className="p-6">
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h3 className="text-xl font-bold text-gray-800 mb-2">{career.title}</h3>
+          <p className="text-gray-600">{career.description}</p>
         </div>
-        <div className="flex items-center mt-2">
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div 
-              className="h-2.5 rounded-full transition-all duration-1000 ease-out" 
-              style={{ 
-                width: `${career.match}%`,
-                backgroundColor: getMatchColor(career.match)
-              }}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={career.match}
-            ></div>
+        <div className="flex flex-col items-end">
+          <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm font-medium mb-2">
+            {career.match}% توافق
           </div>
-          <span className="text-emerald-600 font-medium mr-2">✅ {career.match}٪</span>
-        </div>
-        <div className="mt-2 text-sm text-gray-600">
-          متوسط الراتب: {career.salary.min.toLocaleString()} - {career.salary.max.toLocaleString()} {career.salary.currency} سنوياً
+          <button 
+            onClick={onToggle}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+            aria-label={isExpanded ? 'عرض أقل' : 'عرض المزيد'}
+          >
+            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+          </button>
         </div>
       </div>
-      
+
+      <div className="flex flex-wrap gap-4 mb-4">
+        <div className="flex items-center gap-2">
+          <div className="p-2 bg-blue-100 rounded-full">
+            <TrendingUp size={16} className="text-blue-600" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">نمو المجال</p>
+            <p className="font-medium text-blue-600">+{career.growth}%</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <div className="p-2 bg-emerald-100 rounded-full">
+            <Briefcase size={16} className="text-emerald-600" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">متوسط الراتب</p>
+            <p className="font-medium text-emerald-600">
+              {career.salary.min.toLocaleString()} - {career.salary.max.toLocaleString()} {career.salary.currency}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {isExpanded && (
-        <div className="p-4 bg-emerald-50 border-t border-emerald-100 animate-fadeIn">
-          <p className="mb-3 text-black">🎯 الوصف: {career.description}</p>
-          
-          <div className="mb-4">
-            <p className="font-medium text-black mb-2">🔑 المهارات المطلوبة:</p>
-            <div className="flex flex-wrap gap-2">
-              {career.skills.map((skill, idx) => (
-                <Badge key={idx} text={skill} color="indigo" />
-              ))}
-            </div>
-          </div>
-          
-          <p className="mb-3 text-black">🔗 دورات تعليمية مقترحة:</p>
-          <div className="space-y-3 mb-4">
-            {career.courses.map((course, idx) => (
-              <div key={idx} className="bg-white p-3 rounded-md shadow-sm">
-                <div className="flex justify-between items-center">
-                  <a href={course.url} className="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 font-medium">
-                    {course.name}
-                  </a>
-                  <StarRating rating={course.rating} />
-                </div>
-                <div className="flex justify-between text-sm text-gray-600 mt-1">
-                  <span>{course.provider}</span>
-                  <span>⏱️ {course.duration}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="flex flex-wrap gap-3">
-            <button className="bg-indigo-600 hover:bg-indigo-700 text-black px-4 py-2 rounded-md flex items-center transition-all duration-200 hover:shadow-lg transform hover:-translate-y-1">
-              <Globe size={16} className="ml-2" />
-              استكشاف بيئة العمل (AR)
-            </button>
-            <button className="bg-purple-600 hover:bg-purple-700 text-black px-4 py-2 rounded-md flex items-center transition-all duration-200 hover:shadow-lg transform hover:-translate-y-1">
-              <UserPlus size={16} className="ml-2" />
-              التواصل مع محترفين
-            </button>
-          </div>
+        <div className="animate-fadeIn">
+          <SkillsSection skills={career.skills} />
+          <CoursesSection courses={career.courses} />
+          <ActionButtons />
         </div>
       )}
     </div>
-  );
-};
-
-// Component for profile summary
-const ProfileSummaryCard = () => (
-  <Panel>
-    <div className="flex justify-between items-start mb-4">
-      <SectionHeader icon={<User size={20} />} title="نبذة مختصرة عن المستخدم" />
-      <button className="text-emerald-600 hover:text-emerald-700 font-medium text-sm flex items-center">
-        تعديل الملف الشخصي
-        <ArrowUpRight size={16} className="mr-1" />
-      </button>
-    </div>
-    
-    <div className="grid md:grid-cols-2 gap-4">
-      <div className="flex">
-        <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-3xl font-bold text-emerald-600 ml-4">
-          أي
-        </div>
-        <div>
-          <h3 className="font-bold text-black text-lg">أيوب محمد</h3>
-          <p className="text-gray-600 mb-1">طالب جامعي • تقنية المعلومات</p>
-          <div className="flex gap-2 mt-2">
-            <Badge text="مبدع" color="indigo" />
-            <Badge text="تحليلي" color="purple" />
-            <Badge text="متعلم نشط" color="blue" />
-          </div>
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-3">
-        <div className="bg-emerald-50 p-3 rounded-lg">
-          <div className="text-emerald-700 font-bold mb-1">الاهتمامات</div>
-          <div className="text-sm text-black">التصميم، البرمجة، التحليل، الإبداع، تطوير الألعاب</div>
-        </div>
-        <div className="bg-indigo-50 p-3 rounded-lg">
-          <div className="text-indigo-700 font-bold mb-1">المهارات</div>
-          <div className="text-sm text-black">React، CSS، JavaScript، التفكير المنطقي، حل المشكلات</div>
-        </div>
-        <div className="bg-blue-500 p-3 rounded-lg">
-          <div className="text-indigo-700 font-bold mb-1">نقاط القوة</div>
-          <div className="text-sm text-black">الإبداع، التواصل، العمل الجماعي، التعلم السريع</div>
-        </div>
-        <div className="bg-purple-50 p-3 rounded-lg">
-          <div className="text-purple-700 font-bold mb-1">أهداف التطوير</div>
-          <div className="text-sm text-black">إتقان React، تعلم تحليل البيانات، تطوير مهارات القيادة</div>
-        </div>
-      </div>
-    </div>
-  </Panel>
+  </div>
 );
 
-// Component for learning path
-const LearningPathCard = () => (
-  <Panel>
-    <div className="flex justify-between items-center mb-4">
-      <SectionHeader icon={<Compass size={20} />} title="مسار التعلم المخصص" />
-      <Badge text="تم إنشاؤه بالذكاء الاصطناعي" color="purple" />
-    </div>
-    
-    <div className="space-y-3 mb-4">
-      {LEARNING_PATH.map((item, idx) => (
-        <div key={item.id} className="flex items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-4 ${
-            item.completed ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'
-          }`}>
-            {item.completed ? <span>✓</span> : idx + 1}
-          </div>
-          <div className="flex-1">
-            <div className="flex justify-between">
-              <span className={`font-medium ${item.completed ? 'text-emerald-600' : 'text-black'}`}>{item.title}</span>
-              <span className="text-sm text-gray-500">{item.duration}</span>
-            </div>
-            {idx < LEARNING_PATH.length - 1 && (
-              <div className="h-6 w-px bg-gray-200 mr-4 my-1"></div>
-            )}
-          </div>
-        </div>
+// Rest of the components remain the same...
+const SkillsSection = ({ skills }: { skills: string[] }) => (
+  <div className="mb-6">
+    <h4 className="font-medium text-black mb-3 flex items-center gap-2">
+      <span className="text-xl">🔑</span>
+      المهارات المطلوبة:
+    </h4>
+    <div className="flex flex-wrap gap-2">
+      {skills.map((skill, idx) => (
+        <span key={idx} className="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm
+                                 hover:bg-indigo-200 transition-colors duration-200">
+          {skill}
+        </span>
       ))}
     </div>
-    
-    <div className="mt-4 flex justify-center">
-      <button className="bg-gradient-to-l from-indigo-600 to-purple-600 text-black py-2 px-4 rounded-md hover:shadow-lg transition-all duration-300">
-        عرض الخطة التفصيلية وبدء التعلم
-      </button>
+  </div>
+);
+
+const CoursesSection = ({ courses }: { courses: Course[] }) => (
+  <div className="mb-6">
+    <h4 className="font-medium text-black mb-3 flex items-center gap-2">
+      <span className="text-xl">🔗</span>
+      دورات تعليمية مقترحة:
+    </h4>
+    <div className="grid gap-3">
+      {courses.map((course, idx) => (
+        <CourseCard key={idx} course={course} />
+      ))}
     </div>
-  </Panel>
+  </div>
+);
+
+const CourseCard = ({ course }: { course: Course }) => (
+  <div className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200
+                  transform hover:-translate-y-1">
+    <div className="flex justify-between items-center">
+      <a href={course.url} className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-2
+                                    hover:underline">
+        <BookOpen size={16} />
+        {course.name}
+      </a>
+      <StarRating rating={course.rating} />
+    </div>
+    <div className="flex justify-between text-sm text-gray-600 mt-2">
+      <span className="flex items-center gap-1">
+        <Award size={14} />
+        {course.provider}
+      </span>
+      <span className="flex items-center gap-1">
+        <Clock size={14} />
+        {course.duration}
+      </span>
+    </div>
+  </div>
+);
+
+const ActionButtons = () => (
+  <div className="flex flex-wrap gap-3">
+    <button className="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white px-5 py-2.5 rounded-lg
+                     flex items-center gap-2 hover:shadow-lg transform hover:-translate-y-1">
+      <Globe size={18} />
+      استكشاف بيئة العمل (AR)
+    </button>
+    <button className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-5 py-2.5 rounded-lg
+                     flex items-center gap-2 hover:shadow-lg transform hover:-translate-y-1">
+      <UserPlus size={18} />
+      التواصل مع محترفين
+    </button>
+  </div>
 );
 
 // Component for job postings
@@ -531,45 +528,65 @@ const ChatSection = ({ chatInput, chatResponse, setChatInput, handleChatSubmit }
   chatResponse: string;
   setChatInput: (input: string) => void;
   handleChatSubmit: (e: React.FormEvent) => void;
-}) => {
-  // New function to handle clicking on suggested questions
-  const handleSuggestedQuestion = (question: string) => {
-    setChatInput(question);
-    // Trigger the form submission with a synthetic event
-    const event = { preventDefault: () => {} } as React.FormEvent;
-    handleChatSubmit(event);
-  };
-  
-  return (
-    <Panel>
-      {/* Rest of your component remains the same */}
-      
-      <div className="bg-indigo-50 p-3 rounded-lg">
-        <p className="text-sm font-medium text-indigo-800 mb-2">أسئلة مقترحة:</p>
-        <div className="flex flex-wrap gap-2">
-          <button 
-            onClick={() => handleSuggestedQuestion("لماذا تناسبني مجال تطوير الواجهات؟")}
-            className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200"
-          >
-            لماذا تناسبني مجال تطوير الواجهات؟
-          </button>
-          <button 
-            onClick={() => handleSuggestedQuestion("ما هي المهارات التي يجب تطويرها؟")}
-            className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200"
-          >
-            ما هي المهارات التي يجب تطويرها؟
-          </button>
-          <button 
-            onClick={() => handleSuggestedQuestion("كيف أبدأ في مجال تحليل البيانات؟")}
-            className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200"
-          >
-            كيف أبدأ في مجال تحليل البيانات؟
-          </button>
+}) => (
+  <Panel>
+    
+    <SectionHeader icon={<MessageSquare size={20} />} title="المستشار الافتراضي (روبوت دردشة ذكي)" />
+    <div className="mb-4">
+      <div className="bg-gray-50 p-4 rounded-lg mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+            <MessageSquare size={16} />
+          </div>
+          <p className="font-medium text-black">المستشار المهني الذكي</p>
+        </div>
+        
+        {chatResponse && (
+          <div className="mt-2 p-3 bg-emerald-50 rounded-lg border-r-4 border-emerald-500 animate-slideIn">
+            <p className="text-black">{chatResponse}</p>
+          </div>
+        )}
+        
+        <div className="text-xs text-gray-500 mt-3">
+          يمكنك سؤال المستشار عن التوصيات المهنية، تفاصيل المسارات، أو طلب نصائح شخصية.
         </div>
       </div>
-    </Panel>
-  );
-};
+      
+      <form onSubmit={handleChatSubmit} className="flex">
+        <input
+          type="text"
+          value={chatInput}
+          onChange={(e) => setChatInput(e.target.value)}
+          placeholder="اكتب سؤالك هنا..."
+          className="flex-1 border border-gray-300 rounded-r-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200"
+        />
+        <button 
+          type="submit" 
+          className="bg-emerald-500 text-white px-4 py-2 rounded-l-md hover:bg-emerald-600 transition-colors duration-200"
+          aria-label="Send message"
+        >
+          <Send size={20} />
+        </button>
+      </form>
+    </div>
+    
+    <div className="bg-indigo-50 p-3 rounded-lg">
+      <p className="text-sm font-medium text-indigo-800 mb-2">أسئلة مقترحة:</p>
+      <div className="flex flex-wrap gap-2">
+        <button className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200">
+          لماذا تناسبني مجال تطوير الواجهات؟
+        </button>
+        <button className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200">
+          ما هي المهارات التي يجب تطويرها؟
+        </button>
+        <button className="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200">
+          كيف أبدأ في مجال تحليل البيانات؟
+        </button>
+      </div>
+    </div>
+  </Panel>
+);
+
 // Component for video recommendations
 const VideoRecommendationsCard = () => (
   <Panel>
@@ -634,63 +651,97 @@ const SkillTrendsChart = () => {
   };
 
   return (
-    <Panel className="h-80 hover:shadow-lg transition-shadow duration-300">
+    <Panel className="h-80 hover:shadow-lg transition-shadow duration-300 bg-white">
       <SectionHeader icon={<TrendingUp size={20} />} title="تطور المهارات المطلوبة" />
       
       <ResponsiveContainer width="100%" height="85%">
-        <BarChart 
-          data={SKILL_TREND_DATA as SkillTrendItem[]} 
-          layout="vertical"
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-          barSize={20}
-        >
-          <defs>
-            <linearGradient id="currentGradient" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor={THEME.colors.primary} stopOpacity={0.8} />
-              <stop offset="100%" stopColor={THEME.colors.primary} stopOpacity={1} />
-            </linearGradient>
-            <linearGradient id="previousGradient" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor={THEME.colors.secondary} stopOpacity={0.8} />
-              <stop offset="100%" stopColor={THEME.colors.secondary} stopOpacity={1} />
-            </linearGradient>
-          </defs>
-          <XAxis 
-            type="number" 
-            domain={[0, 100]} 
-            tickFormatter={(value) => `${value}%`}
-          />
-          <YAxis 
-            type="category" 
-            dataKey="name" 
-            width={100} 
-            tick={{ fill: '#374151', fontSize: 12 }}
-          />
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              borderRadius: '8px',
-              border: 'none',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-            }}
-            formatter={(value: number) => [`${value}%`, 'نسبة الطلب']}
-          />
-          <Bar 
-            dataKey="current" 
-            fill="url(#currentGradient)" 
-            name="حالياً"
-            animationDuration={1500}
-            animationBegin={200}
-            radius={[0, 4, 4, 0]}
-          />
-          <Bar 
-            dataKey="previous" 
-            fill="url(#previousGradient)" 
-            name="العام الماضي"
-            animationDuration={1500}
-            animationBegin={400}
-            radius={[0, 4, 4, 0]}
-          />
-        </BarChart>
+      <BarChart 
+        data={SKILL_TREND_DATA.map(item => ({
+        ...item,
+        trend: ((item.current - item.previous) / item.previous * 100).toFixed(1)
+        }))} 
+        layout="vertical"
+        margin={{ top: 10, right: 30, left: 20, bottom: 5 }}
+        barSize={24}
+        barGap={8}
+      >
+        <defs>
+        <linearGradient id="currentGradient" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#10b981" stopOpacity={0.9} />
+          <stop offset="100%" stopColor="#059669" stopOpacity={1} />
+        </linearGradient>
+        <linearGradient id="previousGradient" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.7} />
+          <stop offset="100%" stopColor="#2563eb" stopOpacity={0.9} />
+        </linearGradient>
+        </defs>
+        
+        <XAxis 
+        type="number" 
+        domain={[0, 100]} 
+        tickFormatter={(value) => `${value}%`}
+        tick={{ fill: '#000000', fontSize: 12 }}
+        axisLine={{ stroke: '#E5E7EB' }}
+        tickLine={{ stroke: '#E5E7EB' }}
+        />
+        
+        <YAxis 
+        type="category" 
+        dataKey="name" 
+        width={120}
+        tick={{ fill: '#000000', fontSize: 13, fontWeight: 500 }}
+        axisLine={false}
+        tickLine={false}
+        />
+        
+        <Tooltip 
+        contentStyle={{ 
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          border: '1px solid #E5E7EB',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          padding: '12px',
+          color: '#000000'
+        }}
+        formatter={(value: number, name: string) => [
+          <span className="font-medium text-black">{`${value}%`}</span>,
+          <span className="text-black">
+          {name === 'current' ? 'الطلب الحالي' : 'العام الماضي'}
+          </span>
+        ]}
+        labelStyle={{ 
+          color: '#000000', 
+          fontWeight: 'bold', 
+          marginBottom: '4px' 
+        }}
+        cursor={{ fill: 'rgba(0, 0, 0, 0.04)' }}
+        />
+        
+        <Bar 
+        dataKey="current" 
+        fill="url(#currentGradient)" 
+        name="current"
+        animationDuration={1500}
+        animationBegin={200}
+        radius={[0, 4, 4, 0]}
+        label={{
+          position: 'right',
+          fill: '#000000',
+          fontSize: 12,
+          fontWeight: 500,
+          formatter: (item: { trend: string }) => `+${item.trend}%`
+        }}
+        />
+        
+        <Bar 
+        dataKey="previous" 
+        fill="url(#previousGradient)" 
+        name="previous"
+        animationDuration={1500}
+        animationBegin={400}
+        radius={[0, 4, 4, 0]}
+        />
+      </BarChart>
       </ResponsiveContainer>
     </Panel>
   );
@@ -821,126 +872,241 @@ const MarketAnalysisCard = () => {
   };
 
   return (
-    <Panel className="relative overflow-hidden">
+    <Panel className="relative overflow-hidden backdrop-blur-sm">
       <div className="flex justify-between items-center mb-6">
-        <SectionHeader icon={<TrendingUp size={20} />} title="تحليل سوق العمل" />
-        <RefreshCw 
-          size={16} 
-          className={`text-gray-400 hover:text-emerald-600 cursor-pointer transition-transform duration-500 ${isAnimating ? 'animate-spin' : ''}`}
-          onClick={refreshData}
-        />
+      <SectionHeader icon={<TrendingUp size={20} className="text-emerald-600" />} title="تحليل سوق العمل" />
+      <RefreshCw 
+        size={16} 
+        className={`text-gray-400 hover:text-emerald-600 cursor-pointer transition-all duration-500 hover:rotate-180 ${isAnimating ? 'animate-spin' : ''}`}
+        onClick={refreshData}
+      />
       </div>
       
       <div className="mb-6 space-y-4">
-        <div className="flex justify-between items-center">
-          <h3 className="font-bold text-emerald-600 flex items-center gap-2">
-            🧭 المهارات الأكثر طلباً
-            <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">
-              تحديث مباشر
-            </span>
-          </h3>
-        </div>
+      <div className="flex justify-between items-center">
+        <h3 className="font-bold text-emerald-600 flex items-center gap-2 group">
+        <span className="transform group-hover:rotate-12 transition-transform duration-300">🧭</span>
+        المهارات الأكثر طلباً
+        <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full animate-pulse">
+          تحديث مباشر
+        </span>
+        </h3>
+      </div>
 
-        <div className="grid grid-cols-1 gap-3">
-          {currentSkills.map((skill) => (
+      <div className="grid grid-cols-1 gap-3 relative">
+        {currentSkills.map((skill) => (
+        <div
+          key={skill.name}
+          className={`p-4 rounded-lg transition-all duration-300  cursor-pointer border group
+          ${selectedSkill === skill.name 
+            ? `bg-${skill.color}-100 shadow-xl transform -translate-y-1 border-${skill.color}-200` 
+            : `bg-${skill.color}-50 hover:bg-${skill.color}-100 border-transparent hover:shadow-md`}`}
+          onClick={() => setSelectedSkill(skill.name)}
+        >
+          <div className="flex justify-between items-center mb-3">
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-lg text-black group-hover:text-${skill.color}-700">{skill.name}</span>
+            <span className="text-sm animate-bounce">{skill.trend}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge text={`+${skill.growth}% نمو`} color={skill.color} />
+            <Badge text={skill.demand} color="gray" />
+          </div>
+          </div>
+          
+          <div className="relative mb-4 group">
+          <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
             <div
-              key={skill.name}
-              className={`p-4 rounded-lg transition-all duration-300 cursor-pointer border
-                ${selectedSkill === skill.name 
-                  ? `bg-${skill.color}-100 shadow-lg transform -translate-y-1 border-${skill.color}-200` 
-                  : `bg-${skill.color}-50 hover:bg-${skill.color}-100 border-transparent`}`}
-              onClick={() => setSelectedSkill(skill.name)}
-            >
-              <div className="flex justify-between items-center mb-3">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-lg">{skill.name}</span>
-                  <span className="text-sm animate-pulse">{skill.trend}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge text={`+${skill.growth}% نمو`} color={skill.color} />
-                  <Badge text={skill.demand} color="gray" />
-                </div>
-              </div>
-              
-              <div className="relative mb-4">
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className={`h-2.5 rounded-full transition-all duration-1000
-                      bg-gradient-to-r from-${skill.color}-400 to-${skill.color}-600`}
-                    style={{ width: `${skill.level}%` }}
-                  />
-                </div>
-                <span className="absolute -top-6 right-0 text-sm text-gray-600">
-                  مستوى الطلب: {skill.level}%
-                </span>
-              </div>
+            className={`h-2.5 rounded-full transition-all duration-1000
+              bg-gradient-to-r from-${skill.color}-400 to-${skill.color}-600 group-hover:animate-pulse`}
+            style={{ width: `${skill.level}%` }}
+            />
+          </div>
+          <span className="absolute -top-6 right-0 text-sm text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            مستوى الطلب: {skill.level}%
+          </span>
+          </div>
 
-              {selectedSkill === skill.name && (
-                <div className="mt-3 space-y-2 text-sm animate-fadeIn">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/50 p-2 rounded">
-                      <p className="text-gray-600">متوسط الراتب</p>
-                      <p className="font-medium">15,000 - 25,000 ريال</p>
-                    </div>
-                    <div className="bg-white/50 p-2 rounded">
-                      <p className="text-gray-600">الوظائف المتاحة</p>
-                      <p className="font-medium">120+ وظيفة</p>
-                    </div>
-                  </div>
-                </div>
-              )}
+          {selectedSkill === skill.name && (
+          <div className="mt-3 space-y-2 text-sm animate-fadeIn">
+            <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white/50 p-2 rounded hover:bg-white/70 transition-colors duration-300">
+              <p className="text-gray-600">متوسط الراتب</p>
+              <p className="font-medium">1,500 - 2,500 dh</p>
             </div>
-          ))}
+            <div className="bg-white/50 p-2 rounded hover:bg-white/70 transition-colors duration-300">
+              <p className="text-gray-600">الوظائف المتاحة</p>
+              <p className="font-medium">120+ وظيفة</p>
+            </div>
+            </div>
+          </div>
+          )}
         </div>
+        ))}
+      </div>
       </div>
       
       <div>
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-bold text-emerald-600 flex items-center gap-2">
-            ⏳ المهارات الناشئة للمستقبل
-            <Badge text="توقعات 2024" color="indigo" />
-          </h3>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="font-bold text-emerald-600 flex items-center gap-2 group">
+        <span className="transform group-hover:rotate-180 transition-transform duration-700">⏳</span>
+        المهارات الناشئة للمستقبل
+        <Badge text="توقعات 2024" color="indigo" />
+        </h3>
+      </div>
+
+      <div className="space-y-4">
+        {futureSkills.map((skill) => (
+        <div 
+          key={skill.name} 
+          className="bg-gradient-to-r text-black from-indigo-50 to-purple-50 p-4 rounded-lg hover:shadow-lg transition-all duration-300
+              transform hover:-translate-y-1 hover:scale-[1.02] cursor-pointer"
+        >
+          <div className="flex justify-between items-center mb-3">
+          <div>
+            <h4 className="font-medium mb-1 hover:text-indigo-700 transition-colors duration-300">{skill.name}</h4>
+            <div className="flex gap-2 text-sm">
+            <span className="text-gray-600">خلال {skill.timing}</span>
+            <span>•</span>
+            <span className="text-purple-600 font-medium">تأثير {skill.impact}</span>
+            </div>
+          </div>
+          </div>
+          
+          <div className="mb-3 group">
+          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div
+            className="h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000
+                 group-hover:animate-pulse"
+            style={{ width: `${skill.readiness}%` }}
+            />
+          </div>
+          <div className="mt-2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            جاهزية السوق: {skill.readiness}%
+          </div>
+          </div>
+
+          <div className="flex gap-2 mt-2">
+          {skill.companies.map((company) => (
+            <span key={company} 
+              className="text-xs bg-white/50 px-2 py-1 rounded hover:bg-white/80 transition-colors duration-300
+                   hover:shadow-sm">
+            {company}
+            </span>
+          ))}
+          </div>
+        </div>
+        ))}
+      </div>
+      </div>
+    </Panel>
+  );
+};
+
+// Component for profile summary
+const ProfileSummaryCard = () => {
+  return (
+    <Panel className="mb-6">
+      <div className="flex justify-between items-start mb-6">
+        <div className="flex items-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-2xl font-bold ml-4">
+            أ
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-800">أيوب محمد</h2>
+            <p className="text-gray-600">مطور واجهات أمامية متدرب</p>
+          </div>
+        </div>
+        <button className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-md transition-all duration-200 flex items-center gap-2">
+          <User size={16} />
+          تعديل الملف
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-emerald-50 p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <span className="text-emerald-600 font-medium">مستوى التقدم</span>
+            <span className="text-emerald-700 font-bold">85%</span>
+          </div>
+          <div className="w-full bg-emerald-200 rounded-full h-2 mt-2">
+            <div className="bg-emerald-600 h-2 rounded-full" style={{ width: '85%' }} />
+          </div>
         </div>
 
-        <div className="space-y-4">
-          {futureSkills.map((skill) => (
-            <div 
-              key={skill.name} 
-              className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-lg hover:shadow-md transition-all duration-300"
-            >
-              <div className="flex justify-between items-center mb-3">
-                <div>
-                  <h4 className="font-medium mb-1">{skill.name}</h4>
-                  <div className="flex gap-2 text-sm">
-                    <span className="text-gray-600">خلال {skill.timing}</span>
-                    <span>•</span>
-                    <span className="text-purple-600">تأثير {skill.impact}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mb-3">
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000"
-                    style={{ width: `${skill.readiness}%` }}
-                  />
-                </div>
-                <div className="mt-2 text-sm text-gray-600">
-                  جاهزية السوق: {skill.readiness}%
-                </div>
-              </div>
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <span className="text-blue-600 font-medium">دورات مكتملة</span>
+            <span className="text-blue-700 font-bold">12</span>
+          </div>
+          <div className="w-full bg-blue-200 rounded-full h-2 mt-2">
+            <div className="bg-blue-600 h-2 rounded-full" style={{ width: '60%' }} />
+          </div>
+        </div>
 
-              <div className="flex gap-2 mt-2">
-                {skill.companies.map((company) => (
-                  <span key={company} className="text-xs bg-white/50 px-2 py-1 rounded">
-                    {company}
-                  </span>
-                ))}
+        <div className="bg-purple-50 p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <span className="text-purple-600 font-medium">مهارات مكتسبة</span>
+            <span className="text-purple-700 font-bold">8</span>
+          </div>
+          <div className="w-full bg-purple-200 rounded-full h-2 mt-2">
+            <div className="bg-purple-600 h-2 rounded-full" style={{ width: '75%' }} />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {['JavaScript', 'React', 'HTML/CSS', 'UI/UX', 'Git'].map((skill, index) => (
+          <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+            {skill}
+          </span>
+        ))}
+      </div>
+    </Panel>
+  );
+};
+
+// Component for learning path visualization
+const LearningPathCard = () => {
+  return (
+    <Panel>
+      <SectionHeader icon={<BookOpen size={20} />} title="مسار التعلم المخصص" />
+      
+      <div className="space-y-4">
+        {LEARNING_PATH.map((step, index) => (
+          <div 
+            key={step.id}
+            className={`bg-white p-4 rounded-lg border ${
+              step.completed ? 'border-emerald-500' : 'border-gray-200'
+            } transition-all duration-300 hover:shadow-md`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  step.completed ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'
+                }`}>
+                  {index + 1}
+                </div>
+                <div>
+                  <h3 className="font-medium text-black">{step.title}</h3>
+                  <p className="text-sm text-gray-500">{step.duration}</p>
+                </div>
+              </div>
+              <div className={`text-sm ${step.completed ? 'text-emerald-600' : 'text-gray-400'}`}>
+                {step.completed ? '✓ مكتمل' : 'قيد التقدم'}
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 flex justify-between items-center">
+        <span className="text-sm text-gray-600">
+          اكتمال المسار: {Math.round((LEARNING_PATH.filter(step => step.completed).length / LEARNING_PATH.length) * 100)}%
+        </span>
+        <button className="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-4 py-2 rounded-md transition-all duration-200">
+          تحديث المسار
+        </button>
       </div>
     </Panel>
   );
@@ -1524,7 +1690,148 @@ export default function CareerDashboard() {
         <main className="container mx-auto px-4 pb-12">
           {activeTab === 'dashboard' ? renderDashboardTab() : renderLearningTab()}
         </main>
-      </div>
+      <footer className="bg-gradient-to-b from-gray-900 to-gray-800 text-white py-12">
+        <div className="container mx-auto px-4">
+          {/* Main Footer Content */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            {/* Quick Links */}
+            <div className="transform hover:translate-x-2 transition-transform duration-300">
+              <h4 className="font-bold mb-4 text-lg flex items-center text-emerald-400">
+                <Compass className="ml-2" size={20} />
+                روابط سريعة
+              </h4>
+              <ul className="space-y-3">
+                {[
+                  { text: 'الملف الشخصي', icon: User },
+                  { text: 'الدورات التدريبية', icon: BookOpen },
+                  { text: 'فرص العمل', icon: Briefcase },
+                  { text: 'المرشدين المهنيين', icon: Users }
+                ].map((link, index) => (
+                  <li key={index}>
+                    <a href="#" className="flex items-center group text-gray-300 hover:text-emerald-400 transition-all duration-300">
+                      <link.icon size={16} className="ml-2 opacity-50 group-hover:opacity-100" />
+                      {link.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Resources Section */}
+            <div className="transform hover:translate-x-2 transition-transform duration-300">
+              <h4 className="font-bold mb-4 text-lg flex items-center text-blue-400">
+                <FileText className="ml-2" size={20} />
+                مصادر مفيدة
+              </h4>
+              <ul className="space-y-3">
+                {[
+                  { text: 'مكتبة الفيديوهات', icon: Play },
+                  { text: 'المدونة المهنية', icon: FileText },
+                  { text: 'إحصائيات السوق', icon: TrendingUp },
+                  { text: 'دليل المهارات', icon: Award }
+                ].map((link, index) => (
+                  <li key={index}>
+                    <a href="#" className="flex items-center group text-gray-300 hover:text-blue-400 transition-all duration-300">
+                      <link.icon size={16} className="ml-2 opacity-50 group-hover:opacity-100" />
+                      {link.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Community Section */}
+            <div className="transform hover:translate-x-2 transition-transform duration-300">
+              <h4 className="font-bold mb-4 text-lg flex items-center text-purple-400">
+                <Users className="ml-2" size={20} />
+                مجتمعنا
+              </h4>
+              <ul className="space-y-3">
+                {[
+                  { text: 'منتدى النقاش', icon: MessageSquare },
+                  { text: 'مجموعات التعلم', icon: BookOpen },
+                  { text: 'الفعاليات القادمة', icon: Calendar },
+                  { text: 'قصص النجاح', icon: Star }
+                ].map((link, index) => (
+                  <li key={index}>
+                    <a href="#" className="flex items-center group text-gray-300 hover:text-purple-400 transition-all duration-300">
+                      <link.icon size={16} className="ml-2 opacity-50 group-hover:opacity-100" />
+                      {link.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Newsletter & Social Section */}
+            <div className="space-y-6">
+              <div>
+                <h4 className="font-bold mb-4 text-lg flex items-center text-amber-400">
+                  <Mail className="ml-2" size={20} />
+                  النشرة البريدية
+                </h4>
+                <form className="mt-2 relative">
+                  <input 
+                    type="email" 
+                    placeholder="بريدك الإلكتروني" 
+                    className="w-full bg-gray-800/50 text-white px-4 py-3 rounded-lg pr-12 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-300"
+                  />
+                  <button 
+                    type="submit"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-emerald-600 hover:bg-emerald-700 p-2 rounded-md transition-colors duration-300"
+                  >
+                    <Send size={16} />
+                  </button>
+                </form>
+              </div>
+
+              <div>
+                <h4 className="font-bold mb-4 text-lg flex items-center">
+                  <Globe className="ml-2" size={20} />
+                  تابعنا
+                </h4>
+                <div className="flex gap-3">
+                  {[
+                    { icon: faFacebook, color: 'hover:bg-blue-600' },
+                    { icon: faTwitter, color: 'hover:bg-sky-500' },
+                    { icon: faLinkedin, color: 'hover:bg-blue-700' },
+                    { icon: faGithub, color: 'hover:bg-gray-600' }
+                  ].map((social, index) => (
+                    <a 
+                      key={index}
+                      href="#"
+                      className={`bg-gray-800/50 p-2.5 rounded-lg ${social.color} transition-all duration-300 hover:scale-110`}
+                    >
+                      <FontAwesomeIcon icon={social.icon} width={18} />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Bottom */}
+          <div className="border-t border-gray-800/50 pt-8 mt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-sm text-gray-400">
+                © 2024 المستشار المهني الذكي. جميع الحقوق محفوظة.
+              </p>
+              <div className="flex items-center gap-6 text-sm text-gray-400">
+                {['سياسة الخصوصية', 'الشروط والأحكام', 'خريطة الموقع'].map((item, index) => (
+                  <a 
+                    key={index} 
+                    href="#" 
+                    className="hover:text-emerald-400 transition-colors duration-300"
+                  >
+                    {item}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
     </div>
   );
 }
